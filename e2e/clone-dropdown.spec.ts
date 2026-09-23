@@ -52,11 +52,9 @@ test("adds the clone tab to GitHub's Code dropdown", async ({ page }) => {
 	await expect(tabButton).toHaveAttribute("aria-pressed", "true");
 	await expect(tab).toHaveAttribute("data-selected", "");
 	await expect(
-		panel.getByRole("button", { name: "Download .zip" })
+		panel.getByRole("button", { name: "Clone in VS Code" })
 	).toBeVisible();
-	await expect(panel).toContainText(
-		"Download the current branch as a .zip archive."
-	);
+	await expect(panel).toContainText("Clone using VS Code.");
 	await expect(httpsInput).toBeHidden();
 
 	// The injected tab must match the native ones pixel for pixel: same height,

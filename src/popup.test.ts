@@ -72,7 +72,7 @@ describe("popup target picker", () => {
 			'[role="radio"][aria-checked="true"]'
 		);
 		expect(checked.length).toBe(1);
-		expect((checked[0] as HTMLElement).dataset.id).toBe("zip");
+		expect((checked[0] as HTMLElement).dataset.id).toBe("vscode");
 		expect(
 			document.getElementById("clone-target-tile")?.querySelector("svg")
 		).not.toBeNull();

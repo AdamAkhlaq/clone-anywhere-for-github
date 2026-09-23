@@ -152,11 +152,11 @@ export const CLONE_TARGETS: CloneTarget[] = [
 
 // The target assumed when nothing is stored yet, and the fallback whenever a
 // persisted id no longer matches a known target.
-export const DEFAULT_TARGET_ID = "zip";
+export const DEFAULT_TARGET_ID = "vscode";
 
 /**
  * Resolves a stored id to its CloneTarget, falling back to the default target
- * (the .zip download) for unknown, missing, or stale ids so callers always get
+ * (VS Code) for unknown, missing, or stale ids so callers always get
  * a usable target without their own null handling.
  */
 export function getCloneTarget(id: string | null | undefined): CloneTarget {

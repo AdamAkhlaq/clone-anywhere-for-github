@@ -10,7 +10,7 @@ const STORAGE_KEY = "cloneTargetId";
 // chrome.storage only exists once the "storage" permission is granted — and a
 // freshly added permission isn't live until the extension is reloaded. Resolve
 // the namespace through this one guard so a missing/not-yet-applied permission
-// degrades to "don't persist" (defaulting to the .zip download) instead of
+// degrades to "don't persist" (defaulting to VS Code) instead of
 // throwing an uncaught rejection in the popup. `typeof chrome` guards
 // non-extension contexts
 // (tests, a popup opened as a plain file).
