@@ -50,6 +50,12 @@ npm run package
 5. **Test on GitHub**: Visit any repository and test functionality
 6. **Check console**: Look for errors in DevTools
 
+### Automated Tests
+
+- `npm test` runs the unit tests. The injection logic is exercised against a captured copy of GitHub's Code dropdown in `src/lib/fixtures/`, so it runs offline.
+- `npm run e2e` loads the built extension into Chromium and opens a real github.com repository page (run `npm run build` and `npx playwright install chromium` first). GitHub redesigns the Code dropdown without notice, so CI also runs this suite daily and fails when the clone tab stops rendering.
+- If GitHub changes the dropdown markup, re-capture the fixture so the unit tests reflect what the extension actually meets in production.
+
 ## 📝 Contribution Guidelines
 
 ### Code Standards

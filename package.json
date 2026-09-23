@@ -10,10 +10,11 @@
 		"clean": "rm -rf dist",
 		"package": "npm run build && cd dist && zip -r \"../clone-anywhere-for-github-v$npm_package_version.zip\" .",
 		"lint": "eslint .",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p e2e",
 		"test": "vitest run",
-		"format": "prettier --write \"src/**/*.ts\"",
-		"format:check": "prettier --check \"src/**/*.ts\""
+		"format": "prettier --write \"src/**/*.ts\" \"e2e/**/*.ts\" playwright.config.ts",
+		"format:check": "prettier --check \"src/**/*.ts\" \"e2e/**/*.ts\" playwright.config.ts",
+		"e2e": "playwright test"
 	},
 	"keywords": [
 		"chrome-extension",
@@ -26,7 +27,9 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
+		"@playwright/test": "^1.63.0",
 		"@types/chrome": "^0.1.1",
+		"@types/node": "^26.6.2",
 		"esbuild": "^0.28.1",
 		"eslint": "^10.5.0",
 		"eslint-config-prettier": "^10.1.8",

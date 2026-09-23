@@ -73,3 +73,7 @@ temp/
 
 # Project documentation (personal notes)
 TODO.md
+
+# Playwright
+test-results/
+playwright-report/
