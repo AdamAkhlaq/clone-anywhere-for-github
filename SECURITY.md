@@ -6,7 +6,7 @@ We actively support the following versions of the Clone Anywhere for GitHub exte
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.1.0   | :white_check_mark: |
+| 1.2.0   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

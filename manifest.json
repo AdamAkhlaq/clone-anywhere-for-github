@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Clone Anywhere for GitHub",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Clone any GitHub repo into VS Code, Cursor, Windsurf, VSCodium, or Insiders — or download it as a .zip. One click, no terminal.",
 
 	"permissions": ["storage"],

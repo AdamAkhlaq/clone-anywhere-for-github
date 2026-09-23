@@ -1,6 +1,6 @@
 {
 	"name": "clone-anywhere-for-github",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "A Chrome extension that clones any GitHub repo into VS Code, Cursor, Windsurf, VSCodium, or Insiders — or downloads it as a .zip, straight from the repo page.",
 	"main": "dist/content.js",
 	"scripts": {
