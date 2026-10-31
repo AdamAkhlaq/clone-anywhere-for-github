@@ -22,6 +22,10 @@ export default [
 			],
 		},
 	},
+	{
+		files: ["store-assets/**/*.js"],
+		languageOptions: { globals: { ...globals.browser } },
+	},
 	// Prettier owns formatting; disable any stylistic rules that would conflict.
 	prettier,
 ];

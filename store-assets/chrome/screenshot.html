@@ -2,17 +2,15 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600&display=block" />
+		<link rel="stylesheet" href="code-menu.css" />
+		<script src="code-menu.js"></script>
 		<style>
 			:root {
-				--bg: #ffffff;
 				--subtle: #f6f8fa;
 				--border: #d1d9e0;
-				--border-soft: #e4e8ed;
 				--fg: #1f2328;
 				--muted: #59636e;
-				--faint: #818b98;
-				--green: #1f883d;
-				--orange: #fd8c73;
 				--sans: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 				--mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
 			}
@@ -67,46 +65,7 @@
 
 			.right { flex: 1; display: flex; align-items: center; justify-content: center; }
 
-			/* GitHub Code dropdown */
 			.source { transform: scale(1.18); transform-origin: center; }
-			.code-btn {
-				display: inline-flex; align-items: center; gap: 7px; background: var(--green);
-				color: #fff; font-size: 15px; font-weight: 600; padding: 9px 13px;
-				border-radius: 7px; box-shadow: 0 1px 2px rgba(31,35,40,0.2);
-			}
-			.code-btn svg { width: 16px; height: 16px; fill: #fff; }
-			.code-btn .caret {
-				width: 0; height: 0; margin-left: 3px; border-left: 4px solid transparent;
-				border-right: 4px solid transparent; border-top: 5px solid #fff;
-			}
-			.menu {
-				margin-top: 10px; width: 332px; background: #fff; border: 1px solid var(--border);
-				border-radius: 12px; box-shadow: 0 18px 48px rgba(31,35,40,0.22); overflow: hidden;
-			}
-			.tabs { display: flex; border-bottom: 1px solid var(--border); }
-			.tabs span { flex: 1; text-align: center; padding: 12px; font-size: 14px; font-weight: 600; color: var(--muted); }
-			.tabs .on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); }
-			.mbody { padding: 14px 14px 6px; }
-			.clone-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
-			.clone-head .lhs { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; }
-			.clone-head .lhs svg { width: 16px; height: 16px; fill: var(--fg); }
-			.help {
-				width: 17px; height: 17px; border-radius: 50%; border: 1.4px solid var(--faint);
-				color: var(--faint); font-size: 11px; font-weight: 700; line-height: 14px;
-				text-align: center; font-family: var(--mono);
-			}
-			.subtabs { display: flex; gap: 17px; border-bottom: 1px solid var(--border-soft); margin-bottom: 13px; }
-			.subtabs span { padding-bottom: 9px; font-size: 13.5px; color: var(--muted); font-weight: 500; white-space: nowrap; }
-			.subtabs .on { color: var(--fg); font-weight: 600; box-shadow: inset 0 -2px 0 var(--orange); }
-			.dl-btn {
-				display: block; width: 100%; text-align: center; background: var(--green);
-				color: #fff; font-size: 15px; font-weight: 600; padding: 11px; border-radius: 7px;
-				border: 1px solid rgba(31,35,40,0.12); box-shadow: 0 1px 2px rgba(31,35,40,0.12);
-			}
-			.caption { margin: 11px 2px 0; font-size: 13px; line-height: 1.4; color: var(--muted); }
-			.native-group { border-top: 1px solid var(--border-soft); margin-top: 13px; }
-			.native { display: flex; align-items: center; gap: 11px; padding: 11px 14px; font-size: 13.5px; color: #424a53; }
-			.native svg { width: 16px; height: 16px; fill: var(--faint); flex-shrink: 0; }
 
 			/* Popup chooser */
 			.popup {
@@ -143,10 +102,6 @@
 		<div class="stage" id="stage"></div>
 		<script>
 			const APPICON = '<svg viewBox="0 0 64 64"><g fill="none" stroke="#1f2328" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="21" x2="21" y2="43"/><path d="M44 21 C44 31 32 33 23.5 33"/><circle cx="21" cy="14.5" r="6" fill="#fff"/><circle cx="21" cy="49.5" r="6" fill="#fff"/><circle cx="44" cy="14.5" r="6" fill="#fff"/></g></svg>';
-			const CODEICON = '<svg viewBox="0 0 16 16"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z"/></svg>';
-			const TERMINAL = '<svg viewBox="0 0 16 16"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25ZM7.25 8a.75.75 0 0 1-.22.53l-2.25 2.25a.75.75 0 0 1-1.06-1.06L5.44 8 3.72 6.28a.75.75 0 1 1 1.06-1.06l2.25 2.25c.141.14.22.331.22.53Zm1.5 1.5h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5Z"/></svg>';
-			const DESKTOP = '<svg viewBox="0 0 16 16"><path d="M14.25 1c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0 1 14.25 12h-3.727c.099 1.041.52 1.872 1.292 2.757A.75.75 0 0 1 11.25 16h-6.5a.75.75 0 0 1-.565-1.243c.772-.885 1.192-1.716 1.292-2.757H1.75A1.75 1.75 0 0 1 0 10.25v-7.5C0 1.784.784 1 1.75 1ZM1.75 2.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/></svg>';
-			const FILEZIP = '<svg viewBox="0 0 16 16"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/></svg>';
 			const CHECK = '<svg viewBox="0 0 13 13" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7 5.5 10l5-6.5"/></svg>';
 
 			// Brand glyphs (from the extension's clone-targets), filled per target.
@@ -166,23 +121,7 @@
 			};
 
 			function dropdown(t) {
-				return `
-				<div class="source">
-					<span class="code-btn">${CODEICON}Code <span class="caret"></span></span>
-					<div class="menu">
-						<div class="tabs"><span class="on">Local</span><span>Codespaces</span></div>
-						<div class="mbody">
-							<div class="clone-head"><span class="lhs">${TERMINAL}Clone</span><span class="help">?</span></div>
-							<div class="subtabs"><span class="on">${t.tab}</span><span>HTTPS</span><span>SSH</span><span>GitHub CLI</span></div>
-							<span class="dl-btn">${t.btn}</span>
-							<p class="caption">${t.cap}</p>
-						</div>
-						<div class="native-group">
-							<div class="native">${DESKTOP}Open with GitHub Desktop</div>
-							<div class="native">${FILEZIP}Download ZIP</div>
-						</div>
-					</div>
-				</div>`;
+				return `<div class="source">${codeMenu({ tab: t.tab, button: t.btn, caption: t.cap })}</div>`;
 			}
 
 			function chooser() {

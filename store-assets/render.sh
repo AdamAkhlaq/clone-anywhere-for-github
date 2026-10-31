@@ -16,7 +16,7 @@ CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 render() {
 	local name=$1 w=$2 h=$3
 	"$CHROME" --headless --disable-gpu --hide-scrollbars \
-		--force-device-scale-factor=2 --window-size="$w","$h" \
+		--force-device-scale-factor=2 --virtual-time-budget=1500 --window-size="$w","$h" \
 		--screenshot="$PWD/$name@2x.png" \
 		"file://$PWD/$name.html" 2>/dev/null
 	sips -z "$h" "$w" "$name@2x.png" --out "$name.png" >/dev/null 2>&1

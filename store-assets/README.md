@@ -13,6 +13,7 @@ store-assets/
 └── chrome/                   # Chrome Web Store listing only
     ├── promo-marquee.{html,png}   # marquee promo tile, 1400×560
     ├── promo-small.{html,png}     # small promo tile, 440×280
+    ├── code-menu.{css,js}         # GitHub's Code menu mock, shared by the tiles and screenshots
     ├── screenshot.html            # shared screenshot template (?v=<target>)
     └── screenshot-{vscode,cursor,windsurf,zip,popup}.png   # 1280×800
 ```

@@ -7,8 +7,6 @@ yarn-error.log*
 # Build output
 dist/
 build/
-*.js
-*.js.map
 
 # TypeScript
 *.tsbuildinfo

@@ -1,0 +1,130 @@
+/* GitHub's signed-out Code menu with the extension's tab injected. Every size,
+   colour, and shadow here is GitHub's live computed style (Primer light), so
+   re-capture from github.com rather than eyeballing when GitHub redesigns it. */
+.gh {
+	--gh-fg: #1f2328;
+	--gh-muted: #59636e;
+	--gh-border: #d1d9e0;
+	--gh-track: #e6eaef;
+	--gh-green: #1f883d;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 4px;
+	font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 21px;
+	color: var(--gh-fg);
+	text-align: left;
+}
+.gh, .gh * { box-sizing: border-box; }
+.gh svg { display: block; flex-shrink: 0; fill: currentColor; }
+
+.gh-code {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	height: 32px;
+	padding: 0 12px;
+	background: var(--gh-green);
+	color: #fff;
+	font-weight: 500;
+	border: 1px solid rgba(31, 35, 40, 0.15);
+	border-radius: 6px;
+	box-shadow: 0 1px 1px rgba(31, 35, 40, 0.04), 0 1px 2px rgba(31, 35, 40, 0.03);
+}
+.gh-code svg { width: 16px; height: 16px; }
+
+.gh-menu {
+	width: 400px;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow:
+		0 0 0 1px rgba(209, 217, 224, 0.25),
+		0 6px 12px -3px rgba(37, 41, 46, 0.04),
+		0 6px 18px rgba(37, 41, 46, 0.12);
+}
+.gh-clone { margin: 16px; }
+.gh-head { display: flex; align-items: center; }
+.gh-head .term { width: 16px; height: 16px; margin-right: 8px; }
+.gh-head p { flex: 1; margin: 0; font-weight: 600; }
+.gh-head .help { width: 16px; height: 16px; margin-right: 4px; color: var(--gh-muted); }
+
+.gh-seg {
+	display: inline-flex;
+	height: 32px;
+	margin: 12px 0 8px;
+	padding: 0;
+	list-style: none;
+	background: var(--gh-track);
+	border: 1px solid var(--gh-border);
+	border-radius: 6px;
+}
+.gh-seg li { position: relative; display: flex; margin: -1px 1px -1px 0; }
+.gh-seg li:first-child { margin-left: -1px; }
+.gh-seg li:last-child { margin-right: -1px; }
+.gh-seg li:not(:last-child)::after {
+	content: "";
+	position: absolute;
+	top: 8px;
+	right: -1px;
+	width: 1px;
+	height: 16px;
+	background: var(--gh-border);
+}
+.gh-seg li.on::after,
+.gh-seg li:has(+ li.on)::after { background: transparent; }
+.gh-seg span {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 0 12px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+}
+/* Primer reserves each label's bold width so the control doesn't shift when
+   the selection moves; mirror that so the item widths match. */
+.gh-seg span::after {
+	content: attr(data-text);
+	height: 0;
+	overflow: hidden;
+	visibility: hidden;
+	font-weight: 600;
+}
+.gh-seg li.on span { background: #fff; border-color: var(--gh-border); font-weight: 600; }
+
+.gh-primary {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	margin-bottom: 8px;
+	padding: 0 12px;
+	background: var(--gh-green);
+	color: #fff;
+	font-weight: 500;
+	border: 1px solid rgba(31, 35, 40, 0.15);
+	border-radius: 6px;
+	box-shadow: 0 1px 1px rgba(31, 35, 40, 0.04), 0 1px 2px rgba(31, 35, 40, 0.03);
+}
+.gh-caption { margin: 0; color: var(--gh-muted); }
+
+.gh-actions { margin: 0; padding: 8px 0; list-style: none; border-top: 1px solid var(--gh-border); }
+.gh-actions li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 8px;
+	padding: 6px 8px;
+	line-height: 20px;
+}
+.gh-actions .lv {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	color: var(--gh-muted);
+}
+.gh-actions .lv svg { width: 16px; height: 16px; }
+.gh-actions .lv .app { width: 20px; height: 20px; fill: none; }
