@@ -10,7 +10,7 @@
 	<body>
 		<!-- The GitHub mark appears twice (header source tile + footer link), so
 		     its path is defined once here and referenced with <use>. Hidden via
-		     .popup__defs in the stylesheet — symbols still resolve when not shown. -->
+		     .popup__defs in the stylesheet; symbols still resolve when not shown. -->
 		<svg class="popup__defs" aria-hidden="true" focusable="false">
 			<symbol id="gh-mark" viewBox="0 0 16 16">
 				<path
@@ -22,7 +22,7 @@
 		<main class="popup">
 			<header class="popup__header">
 				<!-- Signature element: the source → destination handoff that states
-				     what the extension does — take a repo from GitHub, open it in the
+				     what the extension does: take a repo from GitHub, open it in the
 				     chosen editor. Decorative, so it's hidden from assistive tech; the
 				     title below carries the name. The source mark is inlined SVG; the
 				     destination tile is filled by popup.js with the selected editor's
@@ -55,8 +55,8 @@
 
 				<h1 class="popup__title">Clone Anywhere for GitHub</h1>
 				<p class="popup__tagline">
-					Clone any GitHub repository straight into your editor — or grab it as
-					a .zip — one click, no terminal.
+					Clone any GitHub repository straight into your editor, or grab it as
+					a .zip. One click, no terminal.
 				</p>
 			</header>
 
@@ -78,7 +78,7 @@
 			</section>
 
 			<footer class="popup__footer">
-				<!-- Brand glyphs are inlined as SVG so they ship with the extension —
+				<!-- Brand glyphs are inlined as SVG so they ship with the extension:
 				     no remote asset, and colours use SVG fill attributes (never an
 				     inline style attribute), keeping the popup MV3-CSP compliant. The
 				     GitHub mark inherits the foreground colour (black, inverting to

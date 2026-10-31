@@ -1,6 +1,6 @@
 /*
  * Popup styling. Sits over GitHub, so it borrows Primer's neutral canvas and
- * adapts with prefers-color-scheme — but the single accent is VS Code's own
+ * adapts with prefers-color-scheme, but the single accent is VS Code's own
  * link blue rather than Primer's, because the destination is what this
  * extension is about. No remote CSS or fonts: the sans stack mirrors GitHub's
  * and the control label uses the system monospace stack (the developer voice).
@@ -14,7 +14,7 @@
 	--gh-fg-default: #1f2328;
 	--gh-fg-muted: #59636e;
 	--gh-border-default: #d1d9e0;
-	/* VS Code "Light+" text-link blue — the destination editor's own accent. */
+	/* VS Code "Light+" text-link blue: the destination editor's own accent. */
 	--gh-accent: #0067c0;
 
 	--gh-font-sans:
@@ -24,7 +24,7 @@
 		ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
 		"Liberation Mono", monospace;
 
-	/* Selected-row check shape only — used as a mask, so the visible colour comes
+	/* Selected-row check shape only, used as a mask, so the visible colour comes
 	   from the masked element (the accent token), not this data URI. The stroke
 	   colour here is arbitrary; one shape serves both themes. */
 	--gh-check: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='13'%20height='13'%20viewBox='0%200%2013%2013'%3E%3Cpath%20d='M2.5%207%205.5%2010l5-6.5'%20fill='none'%20stroke='%23000'%20stroke-width='1.6'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -116,7 +116,7 @@ body {
 	color: var(--gh-fg-default);
 }
 
-/* A short black arrow joins the two tiles — one glyph: a thick foreground shaft
+/* A short black arrow joins the two tiles as one glyph: a thick foreground shaft
    (black in light mode, white in dark) into a matching arrowhead. The fixed
    length keeps VS Code close to GitHub rather than spanning the popup width. */
 .popup__flow {
@@ -204,7 +204,7 @@ body {
 	flex: 1;
 }
 
-/* Checkmark on the selected row — masked so its colour is the accent token in
+/* Checkmark on the selected row, masked so its colour is the accent token in
    both themes. Hidden (zero opacity) on unselected rows so every row keeps the
    same height and the labels never shift. */
 .popup__option::after {

@@ -12,14 +12,12 @@ set -euo pipefail
 cd "$(dirname "$0")"
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
-# name  width  height  [transparent]
+# name  width  height
 render() {
-	local name=$1 w=$2 h=$3 transparent=${4:-}
-	local bg=()
-	[ -n "$transparent" ] && bg=(--default-background-color=00000000)
+	local name=$1 w=$2 h=$3
 	"$CHROME" --headless --disable-gpu --hide-scrollbars \
 		--force-device-scale-factor=2 --window-size="$w","$h" \
-		"${bg[@]}" --screenshot="$PWD/$name@2x.png" \
+		--screenshot="$PWD/$name@2x.png" \
 		"file://$PWD/$name.html" 2>/dev/null
 	sips -z "$h" "$w" "$name@2x.png" --out "$name.png" >/dev/null 2>&1
 	rm -f "$name@2x.png"

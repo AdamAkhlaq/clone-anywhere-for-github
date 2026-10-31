@@ -159,10 +159,10 @@
 			};
 
 			const TARGETS = {
-				vscode:   { tab: "VS Code",  btn: "Clone in VS Code",  cap: "Clone using VS Code.",  glyph: () => G.vscode("#007ACC"),  c1: "#1f6feb", c2: "#0098ff", head: "Straight into VS&nbsp;Code", chipName: "VS Code" },
-				cursor:   { tab: "Cursor",   btn: "Clone in Cursor",   cap: "Clone using Cursor.",   glyph: () => G.cursor("#1f2328"),  c1: "#1f2328", c2: "#444c56", head: "Straight into Cursor", chipName: "Cursor" },
-				windsurf: { tab: "Windsurf", btn: "Clone in Windsurf", cap: "Clone using Windsurf.", glyph: () => G.windsurf("#1f2328"), c1: "#0fae96", c2: "#15b8a6", head: "Straight into Windsurf", chipName: "Windsurf" },
-				zip:      { tab: ".zip",     btn: "Download .zip",     cap: "Download the current branch as a .zip archive.", glyph: () => G.folder("#d4a200"), c1: "#1a7f37", c2: "#2da44e", head: "Grab it as a&nbsp;.zip", chipName: ".zip · current branch" },
+				vscode:   { tab: "VS Code",  btn: "Clone in VS Code",  cap: "Clone using VS Code.",  glyph: () => G.vscode("#007ACC"),  c1: "#1f6feb", c2: "#0098ff", head: "straight into VS&nbsp;Code", chipName: "VS Code" },
+				cursor:   { tab: "Cursor",   btn: "Clone in Cursor",   cap: "Clone using Cursor.",   glyph: () => G.cursor("#1f2328"),  c1: "#1f2328", c2: "#444c56", head: "straight into Cursor", chipName: "Cursor" },
+				windsurf: { tab: "Windsurf", btn: "Clone in Windsurf", cap: "Clone using Windsurf.", glyph: () => G.windsurf("#1f2328"), c1: "#0fae96", c2: "#15b8a6", head: "straight into Windsurf", chipName: "Windsurf" },
+				zip:      { tab: ".zip",     btn: "Download .zip",     cap: "Download the current branch as a .zip archive.", glyph: () => G.folder("#d4a200"), c1: "#1a7f37", c2: "#2da44e", head: "grab it as a&nbsp;.zip", chipName: ".zip · current branch" },
 			};
 
 			function dropdown(t) {
@@ -196,7 +196,7 @@
 				].map(r => `<div class="opt ${r.sel ? "sel" : ""}"><span class="og">${r.g}</span><span class="ol">${r.l}</span>${r.sel ? `<span class="chk">${CHECK}</span>` : ""}</div>`).join("");
 				return `<div class="popup">
 					<div class="phead"><span class="pico">${APPICON}</span><span class="pname">Clone Anywhere</span></div>
-					<p class="ptag">Clone any GitHub repo straight into your editor — or grab it as a .zip.</p>
+					<p class="ptag">Clone any GitHub repo straight into your editor, or grab it as a .zip.</p>
 					<div class="plabel">Clone destination</div>
 					${rows}
 				</div>`;
@@ -208,14 +208,14 @@
 				leftHTML = `
 					<div class="brand"><span class="ico">${APPICON}</span><span class="name">Clone Anywhere for GitHub</span></div>
 					<h1 class="headline">Set it once,<br><span class="accent" style="--c1:#1f6feb;--c2:#0fae96">clone anywhere</span></h1>
-					<p class="sub">Pick your editor — or .zip — from the toolbar. The button on every repo updates to match.</p>`;
+					<p class="sub">Pick your editor (or .zip) from the toolbar. The button on every repo updates to match.</p>`;
 				rightHTML = chooser();
 			} else {
 				const t = TARGETS[v];
 				leftHTML = `
 					<div class="brand"><span class="ico">${APPICON}</span><span class="name">Clone Anywhere for GitHub</span></div>
 					<h1 class="headline" style="--c1:${t.c1};--c2:${t.c2}">One click,<br><span class="accent">${t.head}</span></h1>
-					<p class="sub">From any repo's Code menu — no copying URLs, no terminal.</p>
+					<p class="sub">From any repo's Code menu. No copying URLs, no terminal.</p>
 					<span class="chip"><span class="g">${t.glyph()}</span>${t.chipName}</span>`;
 				rightHTML = dropdown(t);
 			}
