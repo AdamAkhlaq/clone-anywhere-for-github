@@ -27,7 +27,7 @@ export function detectBranch(
 /**
  * Reads the current ref from GitHub's ref-switcher button. We target the button
  * specifically via its stable hooks (the `overview-ref-selector` class, the
- * `ref-selector` id, or the "Switch branches/tags" name) — NOT the git-branch
+ * `ref-selector` id, or the "Switch branches/tags" name), NOT the git-branch
  * octicon alone, which the "Branches"/"Tags" overview links also carry and which
  * once made detection return "Branches" and 404 the download.
  *

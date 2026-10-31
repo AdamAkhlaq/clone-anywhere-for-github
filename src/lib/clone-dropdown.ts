@@ -78,8 +78,7 @@ function cloneLabels(target: CloneTarget) {
 
 function createElement<K extends keyof HTMLElementTagNameMap>(
 	tagName: K,
-	attributes: Record<string, string> = {},
-	styles: Record<string, string> = {}
+	attributes: Record<string, string> = {}
 ): HTMLElementTagNameMap[K] {
 	const element = document.createElement(tagName);
 
@@ -91,13 +90,6 @@ function createElement<K extends keyof HTMLElementTagNameMap>(
 		} else {
 			element.setAttribute(key, value);
 		}
-	}
-
-	if (Object.keys(styles).length > 0) {
-		element.style.cssText =
-			Object.entries(styles)
-				.map(([key, value]) => `${key}: ${value} !important`)
-				.join("; ") + ";";
 	}
 
 	return element;
@@ -173,7 +165,7 @@ export function injectCloneTab(
  * reflected on a page whose clone dropdown is already open. A no-op when
  * nothing is injected yet: fresh injections read the active target directly.
  */
-export function relabelInjectedUI(): void {
+function relabelInjectedUI(): void {
 	const labels = cloneLabels(activeTarget);
 
 	const tab = document.getElementById(ELEMENT_IDS.cloneTab);
@@ -354,18 +346,15 @@ function createPanel(
 function createCloneButton(repoInfo: RepositoryInfo): HTMLButtonElement {
 	const classes = resolveButtonClasses();
 
-	const button = createElement(
-		"button",
-		{
-			"data-component": "Button",
-			type: "button",
-			className: classes.base,
-			"data-loading": "false",
-			"data-size": "medium",
-			"data-variant": "primary",
-		},
-		{ width: "100%" }
-	);
+	const button = createElement("button", {
+		"data-component": "Button",
+		type: "button",
+		className: classes.base,
+		"data-loading": "false",
+		"data-size": "medium",
+		"data-variant": "primary",
+	});
+	button.style.setProperty("width", "100%", "important");
 	const content = createElement("span", {
 		"data-component": "buttonContent",
 		"data-align": "center",

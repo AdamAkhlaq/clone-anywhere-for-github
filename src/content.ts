@@ -1,4 +1,4 @@
-import { RepositoryDetector } from "./lib/repository";
+import { detectRepository } from "./lib/repository";
 import {
 	findCloneMethodList,
 	injectCloneTab,
@@ -53,7 +53,7 @@ class CloneDropdownWatcher {
 		const list = findCloneMethodList(this.root ?? document);
 		if (!list) return;
 
-		const repoInfo = RepositoryDetector.detect();
+		const repoInfo = detectRepository();
 		if (!repoInfo.isRepository) return;
 
 		injectCloneTab(list, repoInfo);

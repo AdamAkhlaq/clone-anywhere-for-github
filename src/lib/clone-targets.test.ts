@@ -36,7 +36,7 @@ describe("CLONE_TARGETS", () => {
 		);
 		expect(archives).toHaveLength(1);
 		// The archive downloads a file rather than handing off to an editor, so it
-		// must carry no urlScheme — the type forbids it, this guards the data too.
+		// must carry no urlScheme: the type forbids it, this guards the data too.
 		expect("urlScheme" in archives[0]).toBe(false);
 	});
 
@@ -44,8 +44,8 @@ describe("CLONE_TARGETS", () => {
 		for (const target of CLONE_TARGETS) {
 			expect(target.icon.path.length).toBeGreaterThan(0);
 			expect(target.icon.viewBox).toMatch(/^0 0 \d+ \d+$/);
-			// A brand colour is optional — omitting it means "render in the
-			// adaptive foreground" — but when present it must be a valid hex.
+			// A brand colour is optional (omitting it means "render in the
+			// adaptive foreground"), but when present it must be a valid hex.
 			if (target.color !== undefined) {
 				expect(target.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
 			}

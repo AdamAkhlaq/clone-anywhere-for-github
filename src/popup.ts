@@ -16,7 +16,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 // Coloured brand marks are theme-aware (their light/dark hexes differ), so
 // resolve against the live colour scheme and recolour the inline `fill`
-// attributes on change — matching the popup's no-inline-style convention (colour
+// attributes on change, matching the popup's no-inline-style convention (colour
 // lives on `fill`, never a style attribute). Targets without a brand colour use
 // `currentColor`, so CSS adapts them to light/dark for free, like the GitHub mark.
 const darkScheme = window.matchMedia("(prefers-color-scheme: dark)");
@@ -108,7 +108,7 @@ class TargetPicker {
 	// Radiogroup keyboard model: selection follows focus, so the arrow keys move
 	// the choice (and commit it, since it's a live preference). The focused row is
 	// always the selected one, so Enter/Space need only swallow the keypress
-	// (e.g. Space's page-scroll) — the row is already chosen.
+	// (e.g. Space's page-scroll); the row is already chosen.
 	private onKeydown(event: KeyboardEvent): void {
 		const ids = CLONE_TARGETS.map((target) => target.id);
 		const current = ids.indexOf(this.selectedId);

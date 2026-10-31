@@ -1,7 +1,7 @@
 // Single source of truth for the destinations the extension can clone a repo
 // to. Most targets are a VS Code build (or a VS Code fork) that bundles the
 // same built-in Git extension, so they clone through an identically shaped deep
-// link — only the URL scheme differs (see `urlScheme` and clone-url.ts). The
+// link; only the URL scheme differs (see `urlScheme` and clone-url.ts). The
 // odd one out is the archive target, which downloads the repo as a .zip with no
 // editor at all; the `kind` discriminant tells the two apart.
 //
@@ -30,12 +30,12 @@ interface CloneTargetBase {
 	// Stable identifier persisted as the user's choice and emitted by the popup.
 	id: string;
 	// Human-facing label shown in the popup and woven into the injected
-	// button/tab text (see cloneLabels in content.ts).
+	// button/tab text (see cloneLabels in clone-dropdown.ts).
 	label: string;
 	// Brand glyph for the popup's selector and header tile.
 	icon: CloneTargetIcon;
 	// Brand colour for the glyph. Omit it to render the mark in the popup's
-	// adaptive foreground (currentColor) — used for near-black brands (Cursor,
+	// adaptive foreground (currentColor), used for near-black brands (Cursor,
 	// Windsurf) whose colour is the foreground anyway, so they need no light/dark
 	// pair. When set, `colorDark` overrides it under prefers-color-scheme: dark,
 	// defaulting to `color`.
@@ -51,7 +51,7 @@ export interface EditorTarget extends CloneTargetBase {
 	urlScheme: string;
 }
 
-// The .zip option: clicking downloads a GitHub source archive — no editor, no
+// The .zip option: clicking downloads a GitHub source archive. No editor, no
 // deep link, so it carries no urlScheme (see buildArchiveUrl in clone-url.ts).
 export interface ArchiveTarget extends CloneTargetBase {
 	kind: "archive";
@@ -67,7 +67,7 @@ const VSCODE_ICON: CloneTargetIcon = {
 	fillRule: "evenodd",
 };
 
-// A classic tabbed folder silhouette for the .zip download target — the one
+// A classic tabbed folder silhouette for the .zip download target, the one
 // non-editor option, so it gets a generic file-system mark rather than a brand
 // logo. Authored as a single filled path in the same 24×24 box as the brand
 // glyphs and rendered in folder yellow (see the archive entry's colours).
@@ -82,9 +82,6 @@ const FOLDER_ICON: CloneTargetIcon = {
 // freely without changing which target is pre-selected.
 export const CLONE_TARGETS: CloneTarget[] = [
 	{
-		// The one non-editor destination: a direct GitHub source archive download.
-		// Listed first and set as the default (DEFAULT_TARGET_ID) so it leads the
-		// popup and is pre-selected.
 		kind: "archive",
 		id: "zip",
 		label: ".zip",
@@ -104,7 +101,7 @@ export const CLONE_TARGETS: CloneTarget[] = [
 			path: "M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23",
 		},
 		// Cursor's mark is near-black; omit a brand colour so it renders in the
-		// popup's adaptive foreground (currentColor) — legible on both canvases.
+		// popup's adaptive foreground (currentColor), legible on both canvases.
 	},
 	{
 		kind: "editor",

@@ -7,13 +7,12 @@ import { DEFAULT_TARGET_ID } from "./clone-targets";
 // "storage" permission in the manifest.
 const STORAGE_KEY = "cloneTargetId";
 
-// chrome.storage only exists once the "storage" permission is granted — and a
+// chrome.storage only exists once the "storage" permission is granted, and a
 // freshly added permission isn't live until the extension is reloaded. Resolve
 // the namespace through this one guard so a missing/not-yet-applied permission
-// degrades to "don't persist" (defaulting to VS Code) instead of
+// degrades to "don't persist" (falling back to the default target) instead of
 // throwing an uncaught rejection in the popup. `typeof chrome` guards
-// non-extension contexts
-// (tests, a popup opened as a plain file).
+// non-extension contexts (tests, a popup opened as a plain file).
 function storageApi() {
 	return typeof chrome !== "undefined" ? chrome.storage : undefined;
 }
@@ -39,7 +38,7 @@ export async function loadSelectedTargetId(): Promise<string> {
 /**
  * Persists the chosen clone-target id. Best-effort: the UI already reflects the
  * choice, so a missing storage API or a write failure is swallowed rather than
- * surfaced as an uncaught rejection — the choice simply isn't remembered.
+ * surfaced as an uncaught rejection; the choice simply isn't remembered.
  */
 export async function saveSelectedTargetId(id: string): Promise<void> {
 	try {
