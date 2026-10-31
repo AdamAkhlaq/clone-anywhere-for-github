@@ -1,6 +1,6 @@
 # Privacy Policy for Clone Anywhere for GitHub
 
-Last updated: **June 15, 2026**
+Last updated: **October 31, 2026**
 
 ## Overview
 
@@ -17,19 +17,16 @@ The Extension:
 - ✅ Does NOT transmit any data to external servers
 - ✅ Does NOT use analytics or tracking services
 
-The only thing the Extension stores is a single preference — **which editor you
-chose to clone into** (e.g. VS Code, Cursor). It is saved through the browser's
-own extension storage so your choice is remembered and can sync across your
-signed-in browsers. It contains no personal data and is never sent to us.
+The only thing the Extension stores is a single preference: **which editor you chose to clone into** (e.g. VS Code, Cursor). It is saved through the browser's own extension storage so your choice is remembered and can sync across your signed-in browsers. It contains no personal data and is never sent to us.
 
 ## Permissions Used
 
 The Extension requests minimal permissions:
 
-### Host Permission: `*://github.com/*`
+### Content script on `https://github.com/*`
 
 - **Purpose**: Required to inject the clone button on GitHub pages
-- **Scope**: Only active on GitHub.com domains
+- **Scope**: Only runs on github.com repository pages; the Extension requests no host permissions
 - **Data Access**: None - we only modify the visual interface
 
 ### `storage`
@@ -73,4 +70,4 @@ Under various privacy laws (GDPR, CCPA, etc.), since we don't collect any person
 
 ---
 
-**In summary**: This extension is designed with privacy in mind - we don't collect or transmit any of your data. The only thing it stores is your chosen editor, kept locally by the browser.
+**In summary**: This extension is designed with privacy in mind - we don't collect or transmit any of your data. The only thing it stores is your chosen editor, kept by the browser's own extension storage.

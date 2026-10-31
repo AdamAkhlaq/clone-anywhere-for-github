@@ -41,11 +41,11 @@ Please include the following information in your report:
 
 This extension:
 
-- ✅ Uses minimal permissions (`*://github.com/*` only)
-- ✅ Does not collect or store user data
+- ✅ Requests a single permission (`storage`, for your editor choice) and runs only on `https://github.com/*`
+- ✅ Does not collect user data; the only stored value is your chosen editor
 - ✅ Does not make external network requests
 - ✅ Is fully open source for transparency
-- ✅ Uses Content Security Policy in manifest
+- ✅ Ships no remote code and relies on Manifest V3's default Content Security Policy
 
 ## Responsible Disclosure
 

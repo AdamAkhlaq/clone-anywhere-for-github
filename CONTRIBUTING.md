@@ -16,7 +16,7 @@ Thank you for your interest in contributing! We welcome contributions from the c
 
 ### Prerequisites
 
-- Node.js 16+ and npm
+- Node.js 20+ and npm
 - Chrome browser for testing
 - VS Code (recommended)
 - Basic TypeScript knowledge

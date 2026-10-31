@@ -1,6 +1,6 @@
 # Clone Anywhere for GitHub 🚀
 
-> Adds a "Clone in …" button to GitHub repository pages that opens any repo in VS Code, Cursor, Windsurf, VSCodium, or VS Code Insiders — or downloads it as a `.zip`. One click, no terminal.
+> Adds a "Clone in …" button to GitHub repository pages that opens any repo in VS Code, Cursor, Windsurf, VSCodium, or VS Code Insiders, or downloads it as a `.zip`. One click, no terminal.
 
 <div align="center">
 
@@ -22,15 +22,15 @@
 
 </div>
 
-Available for Chrome, Edge, Brave, Opera, and other Chromium-based browsers. Once installed, open any GitHub repository — there's nothing to configure. Prefer to build it yourself? See [Development](#development).
+Available for Chrome, Edge, Brave, Opera, and other Chromium-based browsers. Once installed, open any GitHub repository; there's nothing to configure. Prefer to build it yourself? See [Development](#development).
 
 ## ✨ Features
 
-- **One-click clone** — open any repo in your editor straight from its GitHub page.
-- **Choose your editor** — VS Code, VS Code Insiders, VSCodium, Cursor, or Windsurf, set from the toolbar popup and remembered.
-- **Or download a `.zip`** — grab a source archive of the branch you're viewing, no editor needed.
-- **Native integration** — the button matches GitHub's UI and survives its single-page navigation.
-- **Private by design** — runs only on github.com, with no tracking or data collection.
+- **One-click clone**: open any repo in your editor straight from its GitHub page.
+- **Choose your editor**: VS Code, VS Code Insiders, VSCodium, Cursor, or Windsurf, set from the toolbar popup and remembered.
+- **Or download a `.zip`**: grab a source archive of the branch you're viewing, no editor needed.
+- **Native integration**: the button matches GitHub's UI and survives its single-page navigation.
+- **Private by design**: runs only on github.com, with no tracking or data collection.
 
 ## 🚀 How it works
 
@@ -38,7 +38,7 @@ Available for Chrome, Edge, Brave, Opera, and other Chromium-based browsers. Onc
 
    ![Code dropdown showing "Clone in VS Code" as the first option](.github/images/dropdown.png)
 
-2. Click **"Clone in …"** — the first option, named for your chosen editor — and it opens with the clone dialog ready.
+2. Click **"Clone in …"**, the first option, named for your chosen editor. It opens with the clone dialog ready.
 
 Behind the scenes the extension builds a deep link your editor handles automatically, e.g. `vscode://vscode.git/clone?url=https://github.com/owner/repo.git` (or `cursor://…` / `windsurf://…`).
 
@@ -73,17 +73,17 @@ Built with TypeScript and Chrome Manifest V3. Firefox support is planned for a f
 
 ## 🔒 Privacy & permissions
 
-- Runs only on `https://github.com/*` (a content script) — no access to any other site.
-- Uses a single permission, `storage`, to remember your chosen editor locally.
+- Runs only on `https://github.com/*` (a content script), with no access to any other site.
+- Uses a single permission, `storage`, to remember your chosen editor (synced across your signed-in browsers).
 - No accounts, no tracking, no analytics, no data collection. See [PRIVACY.md](PRIVACY.md).
 
 ## 🤝 Contributing
 
-Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Found a bug or have an idea? [Open an issue](https://github.com/AdamAkhlaq/clone-anywhere-for-github/issues) or start a [discussion](https://github.com/AdamAkhlaq/clone-anywhere-for-github/discussions).
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Found a bug or have an idea? [Open an issue](https://github.com/AdamAkhlaq/clone-anywhere-for-github/issues) or start a [discussion](https://github.com/AdamAkhlaq/clone-anywhere-for-github/discussions).
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
 ## ❤️ Support
 
