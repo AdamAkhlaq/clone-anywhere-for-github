@@ -10,7 +10,10 @@ import { loadSelectedTargetId, watchSelectedTargetId } from "./lib/storage";
 // portal, which is `data-turbo-permanent`: it survives GitHub's SPA
 // navigations, so one observer on it sees every dropdown open on every repo
 // page for the life of the tab. It's also a tiny subtree, so watching it is
-// far cheaper than watching the whole body.
+// far cheaper than watching the whole body. And it is the only place searched:
+// READMEs and comments can render a list that looks like the clone-method tabs
+// (GitHub's sanitizer keeps `<ul aria-label="Remote URL selector">`), but they
+// never render into the portal.
 const PORTAL_ROOT_SELECTORS = ["#__primerPortalRoot__", "[data-portal-root]"];
 
 function findPortalRoot(): Element | null {
@@ -47,10 +50,13 @@ class CloneDropdownWatcher {
 	}
 
 	private sync(): void {
-		// The body is only a stand-in until the portal root exists.
-		if (this.root === document.body) this.observe();
+		// The body is only watched, never searched, until the portal root exists.
+		if (!this.root || this.root === document.body) {
+			this.observe();
+			if (!this.root || this.root === document.body) return;
+		}
 
-		const list = findCloneMethodList(this.root ?? document);
+		const list = findCloneMethodList(this.root);
 		if (!list) return;
 
 		const repoInfo = detectRepository();

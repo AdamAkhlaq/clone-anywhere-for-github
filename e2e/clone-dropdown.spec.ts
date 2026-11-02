@@ -263,3 +263,39 @@ test("keeps the .zip download inside the repo when user content mimics the branc
 		new RegExp(`^${new URL(REPO_URL).pathname}/`)
 	);
 });
+
+test("leaves README lists alone when the page has no portal root yet", async ({
+	page,
+}) => {
+	// Serve the real repo page without the server-rendered portal root, so the
+	// extension starts out watching the whole body, and with a README list in
+	// the form GitHub's sanitizer keeps (captured from its Markdown API).
+	await page.route(REPO_URL, async (route) => {
+		const response = await route.fetch();
+		const html = (await response.text())
+			.replace(/<div id="__primerPortalRoot__"[^>]*><\/div>/, "")
+			.replace(
+				/<article class="markdown-body[^>]*>/,
+				(article) =>
+					`${article}<ul aria-label="Remote URL selector"><li>HTTPS</li></ul>` +
+					`<p id="readme-after-list">After the list</p>`
+			);
+		await route.fulfill({ response, body: html });
+	});
+	await page.goto(REPO_URL);
+
+	const readmeList = page.locator(
+		'article > ul[aria-label="Remote URL selector"]'
+	);
+	await expect(readmeList).toBeVisible();
+	await expect(page.locator("#readme-after-list")).toBeVisible();
+	await expect(readmeList.locator("#clone-target-tab")).toHaveCount(0);
+
+	// Primer creates the portal on demand, and the real dropdown still gets the
+	// tab.
+	await page.getByRole("button", { name: "Code", exact: true }).click();
+	const list = page.getByRole("list", { name: "Remote URL selector" }).last();
+	await expect(list.locator("#clone-target-tab")).toBeVisible();
+	await expect(page.locator("#clone-target-tab")).toHaveCount(1);
+	await expect(page.locator("#readme-after-list")).toBeVisible();
+});
