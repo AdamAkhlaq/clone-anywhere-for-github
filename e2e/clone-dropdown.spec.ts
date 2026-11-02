@@ -1,13 +1,23 @@
 import { chromium, expect, test as base } from "@playwright/test";
 import type { BrowserContext } from "@playwright/test";
-import { mkdtempSync, rmSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { CLONE_TARGETS } from "../src/lib/clone-targets";
 
 // Runs the built extension against the real github.com, so a GitHub redesign
 // that stops the tab from rendering fails here instead of going unnoticed
 // until a user reports it.
-const EXTENSION_PATH = resolve(__dirname, "..", "dist");
+const EXTENSION_PATH = realpathSync(resolve(__dirname, "..", "dist"));
+// The extension has no background worker to read its id from, but Chromium
+// derives an unpacked extension's id from its path: the first 32 hex digits of
+// the path's SHA-256, each mapped from 0-f onto a-p.
+const EXTENSION_ID = [
+	...createHash("sha256").update(EXTENSION_PATH).digest("hex").slice(0, 32),
+]
+	.map((digit) => String.fromCharCode(97 + parseInt(digit, 16)))
+	.join("");
 const REPO_URL = "https://github.com/AdamAkhlaq/clone-anywhere-for-github";
 
 const test = base.extend<{ context: BrowserContext }>({
@@ -113,4 +123,56 @@ test("keeps working after an in-page navigation to another repo", async ({
 
 	await expect(page.locator("#clone-target-tab")).toBeVisible();
 	await expect(page.locator("#clone-target-panel")).toBeVisible();
+});
+
+test("fits every target's tab on one line in the signed-in menu", async ({
+	context,
+	page,
+}) => {
+	await page.goto(REPO_URL);
+	await page.getByRole("button", { name: "Code", exact: true }).click();
+
+	const list = page.getByRole("list", { name: "Remote URL selector" });
+	const tabButton = list.locator("#clone-target-tab").getByRole("button");
+	const native = list.getByRole("button", { name: "Clone with HTTPS" });
+	await expect(tabButton).toBeVisible();
+
+	// Signed-in users also get an SSH item, which leaves the least room for our
+	// label. This suite runs signed out, so recreate it from GitHub's own HTTPS
+	// item.
+	await native.evaluate((button) => {
+		const https = button.closest("li")!;
+		const ssh = https.cloneNode(true) as HTMLElement;
+		const text = ssh.querySelector("[data-text]")!;
+		text.textContent = "SSH";
+		text.setAttribute("data-text", "SSH");
+		ssh.querySelector("button")!.setAttribute("aria-label", "Clone with SSH");
+		https.after(ssh);
+	});
+
+	const popup = await context.newPage();
+	await popup.goto(`chrome-extension://${EXTENSION_ID}/popup.html`);
+
+	for (const target of CLONE_TARGETS) {
+		await popup.getByRole("radio", { name: target.label, exact: true }).click();
+		await expect(tabButton).toHaveAttribute(
+			"aria-label",
+			target.kind === "archive"
+				? "Download repository as a .zip"
+				: `Clone with ${target.label}`
+		);
+
+		// The button keeps its fixed height when the label wraps (the text just
+		// overflows it), so compare the label text itself with a native one.
+		const [ours, theirs, control, container] = await Promise.all([
+			tabButton.locator("[data-text]").boundingBox(),
+			native.locator("[data-text]").boundingBox(),
+			list.boundingBox(),
+			list.locator("..").boundingBox(),
+		]);
+		expect(ours?.height, target.label).toBe(theirs?.height);
+		expect(control!.x + control!.width, target.label).toBeLessThanOrEqual(
+			container!.x + container!.width
+		);
+	}
 });

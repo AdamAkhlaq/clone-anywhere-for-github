@@ -32,6 +32,10 @@ interface CloneTargetBase {
 	// Human-facing label shown in the popup and woven into the injected
 	// button/tab text (see cloneLabels in clone-dropdown.ts).
 	label: string;
+	// Shorter label for the tab injected into GitHub's Code menu, for labels too
+	// long to share its segmented control. Signed-in menus also list SSH, which
+	// leaves no room for a two-word name. The button and aria-label keep `label`.
+	tabLabel?: string;
 	// Brand glyph for the popup's selector and header tile.
 	icon: CloneTargetIcon;
 	// Brand colour for the glyph. Omit it to render the mark in the popup's
@@ -140,6 +144,7 @@ export const CLONE_TARGETS: CloneTarget[] = [
 		kind: "editor",
 		id: "vscode-insiders",
 		label: "VS Code Insiders",
+		tabLabel: "Insiders",
 		urlScheme: "vscode-insiders://vscode.git/clone",
 		icon: VSCODE_ICON,
 		color: "#1F9E84",

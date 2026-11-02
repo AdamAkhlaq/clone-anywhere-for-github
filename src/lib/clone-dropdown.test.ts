@@ -206,6 +206,24 @@ describe("setActiveTarget", () => {
 		);
 	});
 
+	it("uses a target's short tab label while the button keeps the full name", () => {
+		injectCloneTab(list(), REPO);
+		setActiveTarget("vscode-insiders");
+
+		const text = tab()!.querySelector("[data-text]")!;
+		expect(text.textContent).toBe("Insiders");
+		expect(text.getAttribute("data-text")).toBe("Insiders");
+		expect(tab()!.querySelector("button")!.getAttribute("aria-label")).toBe(
+			"Clone with VS Code Insiders"
+		);
+		expect(panel()!.querySelector("button")!.textContent).toBe(
+			"Clone in VS Code Insiders"
+		);
+		expect(panel()!.querySelector("p")!.textContent).toBe(
+			"Clone using VS Code Insiders."
+		);
+	});
+
 	it("labels a later injection with the new target", () => {
 		setActiveTarget("cursor");
 		injectCloneTab(list(), REPO);

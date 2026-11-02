@@ -57,7 +57,7 @@ export function setActiveTarget(id: string): void {
 // archive target gets download wording instead of the editors' clone wording,
 // since it produces a file rather than opening an editor.
 function cloneLabels(target: CloneTarget) {
-	const tab = target.label;
+	const tab = target.tabLabel ?? target.label;
 
 	if (target.kind === "archive") {
 		return {
