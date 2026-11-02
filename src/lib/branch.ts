@@ -34,10 +34,15 @@ export function detectBranch(
  * Its aria-label reads "<ref> branch" exactly when a branch (not a tag or commit)
  * is checked out, so it doubles as the ref and the proof that `refs/heads/<ref>`
  * is the right archive path. Anything else returns null → HEAD fallback.
+ *
+ * READMEs and comments can carry `<a id="ref-selector" aria-label="…">`: GitHub
+ * keeps the aria-label and only prefixes the id with `user-content-`, which
+ * still contains "ref-selector". Such ids are excluded so page content can
+ * never choose the ref.
  */
 function readBranchFromRefSelector(doc: Document): string | null {
 	const button = doc.querySelector(
-		'[class~="overview-ref-selector"], [id*="ref-selector"], [data-icv-name="Switch branches/tags"]'
+		'[class~="overview-ref-selector"], [id*="ref-selector"]:not([id^="user-content-"]), [data-icv-name="Switch branches/tags"]'
 	);
 
 	const label = button?.getAttribute("aria-label")?.trim() ?? "";

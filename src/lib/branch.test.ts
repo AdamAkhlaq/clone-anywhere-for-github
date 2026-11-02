@@ -86,6 +86,20 @@ describe("detectBranch", () => {
 		);
 	});
 
+	it("ignores user content that mimics the switcher's id", () => {
+		// GitHub's sanitized rendering of `<a id="ref-selector" aria-label="…">`
+		// in a README or comment.
+		const planted =
+			'<a id="user-content-ref-selector" aria-label="attacker branch">docs</a>';
+		expect(detectBranch("/facebook/react", docWith(planted))).toBeNull();
+		expect(
+			detectBranch(
+				"/facebook/react",
+				docWith(planted + refSwitcher("main branch"))
+			)
+		).toBe("main");
+	});
+
 	it("returns null when neither the switcher nor the URL names a ref", () => {
 		expect(detectBranch("/facebook/react", emptyDoc())).toBeNull();
 	});

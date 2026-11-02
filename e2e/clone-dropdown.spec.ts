@@ -176,3 +176,46 @@ test("fits every target's tab on one line in the signed-in menu", async ({
 		);
 	}
 });
+
+test("keeps the .zip download inside the repo when user content mimics the branch switcher", async ({
+	context,
+	page,
+}) => {
+	const popup = await context.newPage();
+	await popup.goto(`chrome-extension://${EXTENSION_ID}/popup.html`);
+	await popup.getByRole("radio", { name: ".zip", exact: true }).click();
+	await popup.close();
+
+	await page.goto(REPO_URL);
+
+	// This is GitHub's sanitized rendering of
+	// `<a id="ref-selector" aria-label="../../../../../octocat/Hello-World/archive/refs/heads/master branch">`
+	// in a README or comment (captured from GitHub's Markdown API): the id gains
+	// a `user-content-` prefix and the aria-label survives. GitHub's own
+	// switcher is removed so the planted link is the only candidate, which is
+	// what any page lacking the switcher or listing user content first presents.
+	await page.evaluate(() => {
+		document.querySelector('[id$="ref-selector"]')?.remove();
+		const planted = document.createElement("a");
+		planted.id = "user-content-ref-selector";
+		planted.setAttribute(
+			"aria-label",
+			"../../../../../octocat/Hello-World/archive/refs/heads/master branch"
+		);
+		planted.textContent = "docs";
+		document.querySelector("article")?.prepend(planted);
+	});
+
+	await page.getByRole("button", { name: "Code", exact: true }).click();
+	const [download] = await Promise.all([
+		page.waitForEvent("download"),
+		page.getByRole("button", { name: "Download .zip" }).click(),
+	]);
+	await download.cancel();
+
+	// GitHub redirects the archive to codeload, which keeps the /<owner>/<repo>
+	// path prefix.
+	expect(new URL(download.url()).pathname).toMatch(
+		new RegExp(`^${new URL(REPO_URL).pathname}/`)
+	);
+});

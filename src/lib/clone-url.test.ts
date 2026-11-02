@@ -67,6 +67,11 @@ describe("buildArchiveUrl", () => {
 		["empty branch", ""],
 		["whitespace-only branch", "   "],
 		["branch with whitespace", "feature x"],
+		["parent-directory segment", "../../../../../octocat/Hello-World/x"],
+		["current-directory segment", "./main"],
+		["segment starting with a dot", "release/.hidden"],
+		["empty segment", "release//v2"],
+		["trailing slash", "main/"],
 	])("falls back to HEAD for %s", (_label, branch) => {
 		expect(buildArchiveUrl("facebook", "react", branch)).toBe(
 			"https://github.com/facebook/react/archive/HEAD.zip"

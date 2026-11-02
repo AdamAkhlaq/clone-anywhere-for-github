@@ -68,11 +68,19 @@ export function buildArchiveUrl(
  * slashes themselves are kept, so a nested ref (e.g. `release/v2`) keeps the
  * path shape GitHub expects yet no segment can break out of the URL. A blank or
  * whitespace-bearing value (refs never contain whitespace) is rejected outright.
+ *
+ * So is any empty segment or one starting with ".". Git forbids both in ref
+ * names (git check-ref-format), and `.`/`..` survive encodeURIComponent, so the
+ * browser would resolve them out of the repo's path and download another repo.
  */
 function normalizeBranch(branch?: string | null): string | null {
 	const trimmed = branch?.trim();
 	if (!trimmed || /\s/.test(trimmed)) {
 		return null;
 	}
-	return trimmed.split("/").map(encodeURIComponent).join("/");
+	const segments = trimmed.split("/");
+	if (segments.some((segment) => segment === "" || segment.startsWith("."))) {
+		return null;
+	}
+	return segments.map(encodeURIComponent).join("/");
 }
