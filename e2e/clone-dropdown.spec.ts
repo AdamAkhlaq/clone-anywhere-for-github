@@ -268,25 +268,27 @@ test("leaves README lists alone when the page has no portal root yet", async ({
 	page,
 }) => {
 	// Serve the real repo page without the server-rendered portal root, so the
-	// extension starts out watching the whole body, and with a README list in
-	// the form GitHub's sanitizer keeps (captured from its Markdown API).
+	// extension starts out watching the whole body, and with a list in the form
+	// GitHub's sanitizer keeps in a README (captured from its Markdown API). It
+	// goes at the top of the body rather than in the README itself because
+	// GitHub's React code can re-render the README and drop it, and the
+	// extension's body search doesn't depend on where the list sits.
 	await page.route(REPO_URL, async (route) => {
 		const response = await route.fetch();
 		const html = (await response.text())
 			.replace(/<div id="__primerPortalRoot__"[^>]*><\/div>/, "")
 			.replace(
-				/<article class="markdown-body[^>]*>/,
-				(article) =>
-					`${article}<ul aria-label="Remote URL selector"><li>HTTPS</li></ul>` +
-					`<p id="readme-after-list">After the list</p>`
+				/<body[^>]*>/,
+				(body) =>
+					`${body}<div class="markdown-body" data-testid="readme">` +
+					`<ul aria-label="Remote URL selector"><li>HTTPS</li></ul>` +
+					`<p id="readme-after-list">After the list</p></div>`
 			);
 		await route.fulfill({ response, body: html });
 	});
 	await page.goto(REPO_URL);
 
-	const readmeList = page.locator(
-		'article > ul[aria-label="Remote URL selector"]'
-	);
+	const readmeList = page.getByTestId("readme").getByRole("list");
 	await expect(readmeList).toBeVisible();
 	await expect(page.locator("#readme-after-list")).toBeVisible();
 	await expect(readmeList.locator("#clone-target-tab")).toHaveCount(0);
