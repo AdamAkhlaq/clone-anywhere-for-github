@@ -4,10 +4,10 @@
 	"description": "A Chrome extension that clones any GitHub repo into VS Code, Cursor, Windsurf, VSCodium, or Insiders, or downloads it as a .zip, straight from the repo page.",
 	"scripts": {
 		"bundle": "esbuild src/content.ts src/popup.ts --bundle --format=iife --target=es2020 --outdir=dist",
-		"build": "npm run bundle && node scripts/build-manifest.mjs && cp popup.html popup.css dist/ && cp -r icons dist/",
+		"build": "npm run clean && npm run bundle && node scripts/build-manifest.mjs && cp popup.html popup.css dist/ && cp -r icons dist/",
 		"dev": "npm run bundle -- --watch",
 		"clean": "rm -rf dist",
-		"package": "npm run build && cd dist && zip -r \"../clone-anywhere-for-github-v$npm_package_version.zip\" .",
+		"package": "npm run build && rm -f \"clone-anywhere-for-github-v$npm_package_version.zip\" && cd dist && zip -r \"../clone-anywhere-for-github-v$npm_package_version.zip\" .",
 		"lint": "eslint .",
 		"typecheck": "tsc --noEmit && tsc -p e2e",
 		"test": "vitest run",
