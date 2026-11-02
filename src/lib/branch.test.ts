@@ -37,9 +37,38 @@ describe("detectBranch", () => {
 		expect(detectBranch("/facebook/react", doc)).toBe("main");
 	});
 
-	it("prefers the switcher over the URL ref segment", () => {
+	it("returns null when the switcher and the URL name different refs", () => {
 		const doc = docWith(refSwitcher("develop branch"));
-		expect(detectBranch("/facebook/react/tree/main", doc)).toBe("develop");
+		expect(detectBranch("/facebook/react/tree/main", doc)).toBeNull();
+	});
+
+	it("keeps a nested ref from the switcher on a file path below it", () => {
+		const doc = docWith(refSwitcher("release/v2 branch"));
+		expect(detectBranch("/my-org/repo/tree/release/v2/src", doc)).toBe(
+			"release/v2"
+		);
+	});
+
+	it("matches the switcher against the decoded URL ref", () => {
+		const doc = docWith(refSwitcher("fix#42 branch"));
+		expect(detectBranch("/my-org/repo/tree/fix%2342", doc)).toBe("fix#42");
+	});
+
+	it("returns null on a tag page rather than reading the tag as a branch", () => {
+		const doc = docWith(refSwitcher("v1.2.3 tag"));
+		expect(detectBranch("/facebook/react/tree/v1.2.3", doc)).toBeNull();
+	});
+
+	it("returns null on a commit page, which GitHub labels as a branch", () => {
+		// GitHub's switcher reads "<short sha> branch" on a commit; that short
+		// hash is not a branch and refs/heads/<it> would 404.
+		const doc = docWith(refSwitcher("02a52ae branch"));
+		expect(
+			detectBranch(
+				"/my-org/repo/tree/02a52ae40c50a66d732ab0b823516b8f6318f65a",
+				doc
+			)
+		).toBeNull();
 	});
 
 	it("ignores the 'Branches' overview link (the 404 regression)", () => {

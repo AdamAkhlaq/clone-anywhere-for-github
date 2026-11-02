@@ -42,7 +42,7 @@ Available for Chrome, Edge, Brave, Opera, and other Chromium-based browsers. Onc
 
 Behind the scenes the extension builds a deep link your editor handles automatically, e.g. `vscode://vscode.git/clone?url=https://github.com/owner/repo.git` (or `cursor://…` / `windsurf://…`).
 
-**Choosing your destination.** Click the toolbar icon to pick where repos open. The VS Code-family editors share the same `…/vscode.git/clone` link and differ only by URL scheme. Choose **`.zip`** instead and the button becomes **"Download .zip"**, fetching GitHub's archive of the current branch (`…/archive/refs/heads/<branch>.zip`, falling back to `…/archive/HEAD.zip` for the default branch).
+**Choosing your destination.** Click the toolbar icon to pick where repos open. The VS Code-family editors share the same `…/vscode.git/clone` link and differ only by URL scheme. Choose **`.zip`** instead and the button becomes **"Download .zip"**, fetching the same archive as GitHub's own **Download ZIP** for whatever branch, tag, or commit you're viewing.
 
 ## 🛠️ Troubleshooting
 

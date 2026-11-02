@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildArchiveUrl, buildCloneUrl } from "./clone-url";
+import { buildArchiveUrl, buildCloneUrl, verifyArchiveUrl } from "./clone-url";
 import { CLONE_TARGETS, EditorTarget } from "./clone-targets";
 
 const VSCODE_SCHEME = "vscode://vscode.git/clone";
@@ -103,5 +103,51 @@ describe("buildArchiveUrl", () => {
 		["dot in owner", "face.book", "react"],
 	])("returns null for %s", (_label, owner, repo) => {
 		expect(buildArchiveUrl(owner, repo, "main")).toBeNull();
+	});
+});
+
+describe("verifyArchiveUrl", () => {
+	const ARCHIVE = "https://github.com/my-org/repo/archive";
+
+	it.each([
+		["a branch", `${ARCHIVE}/refs/heads/main.zip`],
+		["a nested branch", `${ARCHIVE}/refs/heads/release/v2.zip`],
+		["a tag", `${ARCHIVE}/refs/tags/v1.2.0.zip`],
+		["a commit", `${ARCHIVE}/02a52ae40c50a66d732ab0b823516b8f6318f65a.zip`],
+	])("accepts this repo's archive of %s", (_label, href) => {
+		expect(verifyArchiveUrl(href, "my-org", "repo")).toBe(href);
+	});
+
+	it("compares owner and repo case-insensitively, as GitHub does", () => {
+		const href = "https://github.com/My-Org/Repo/archive/refs/heads/main.zip";
+		expect(verifyArchiveUrl(href, "my-org", "repo")).toBe(href);
+	});
+
+	it.each([
+		["another repo", "https://github.com/octocat/repo/archive/HEAD.zip"],
+		[
+			"a dot-segment escape to another repo",
+			`${ARCHIVE}/../../../octocat/repo/archive/HEAD.zip`,
+		],
+		[
+			"a repo whose name extends this one",
+			"https://github.com/my-org/repo-evil/archive/HEAD.zip",
+		],
+		["another host", "https://example.com/my-org/repo/archive/HEAD.zip"],
+		["plain http", "http://github.com/my-org/repo/archive/HEAD.zip"],
+		["a non-archive path", "https://github.com/my-org/repo/releases/x.zip"],
+		["a non-zip archive", `${ARCHIVE}/HEAD.tar.gz`],
+		["a query string", `${ARCHIVE}/HEAD.zip?x=1`],
+		["a fragment", `${ARCHIVE}/HEAD.zip#x`],
+		["a relative URL", "/my-org/repo/archive/HEAD.zip"],
+		["a javascript: URL", "javascript:alert(1)//archive/x.zip"],
+	])("rejects %s", (_label, href) => {
+		expect(verifyArchiveUrl(href, "my-org", "repo")).toBeNull();
+	});
+
+	it("rejects anything when owner/repo are invalid", () => {
+		expect(
+			verifyArchiveUrl(`${ARCHIVE}/HEAD.zip`, "my-org", "repo?x")
+		).toBeNull();
 	});
 });

@@ -1,5 +1,5 @@
 import { chromium, expect, test as base } from "@playwright/test";
-import type { BrowserContext } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 import { createHash } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -177,23 +177,76 @@ test("fits every target's tab on one line in the signed-in menu", async ({
 	}
 });
 
-test("keeps the .zip download inside the repo when user content mimics the branch switcher", async ({
-	context,
-	page,
-}) => {
+async function chooseZipTarget(context: BrowserContext): Promise<void> {
 	const popup = await context.newPage();
 	await popup.goto(`chrome-extension://${EXTENSION_ID}/popup.html`);
 	await popup.getByRole("radio", { name: ".zip", exact: true }).click();
 	await popup.close();
+}
 
+// Clicks our download button and returns the path the archive was served from.
+// GitHub redirects archives to codeload.github.com/<owner>/<repo>/zip/<ref>. A
+// URL GitHub can't serve navigates the tab to a "404: Not Found" page instead
+// of downloading, so a missing download fails fast rather than at the test
+// timeout. `withoutNativeLink` removes GitHub's own "Download ZIP" link first,
+// forcing the extension down its fallback path.
+async function downloadZip(
+	page: Page,
+	{ withoutNativeLink = false } = {}
+): Promise<string> {
+	await page.getByRole("button", { name: "Code", exact: true }).click();
+	if (withoutNativeLink) {
+		await page.getByRole("link", { name: "Download ZIP" }).evaluate((link) => {
+			link.remove();
+		});
+	}
+	const [download] = await Promise.all([
+		page.waitForEvent("download", { timeout: 10_000 }),
+		page.getByRole("button", { name: "Download .zip" }).click(),
+	]);
+	await download.cancel();
+	return new URL(download.url()).pathname;
+}
+
+// v1.2.0 is a published release, so its tag and commit are fixed forever.
+const RELEASE_TAG = "v1.2.0";
+const RELEASE_COMMIT = "02a52ae40c50a66d732ab0b823516b8f6318f65a";
+
+for (const { view, path, ref } of [
+	{ view: "branch", path: "", ref: "refs/heads/main" },
+	{
+		view: "tag",
+		path: `/tree/${RELEASE_TAG}`,
+		ref: `refs/tags/${RELEASE_TAG}`,
+	},
+	{ view: "commit", path: `/tree/${RELEASE_COMMIT}`, ref: RELEASE_COMMIT },
+]) {
+	test(`downloads the ${view} the page shows as a .zip`, async ({
+		context,
+		page,
+	}) => {
+		await chooseZipTarget(context);
+		await page.goto(REPO_URL + path);
+
+		expect(await downloadZip(page)).toBe(
+			`${new URL(REPO_URL).pathname}/zip/${ref}`
+		);
+	});
+}
+
+test("keeps the .zip download inside the repo when user content mimics the branch switcher", async ({
+	context,
+	page,
+}) => {
+	await chooseZipTarget(context);
 	await page.goto(REPO_URL);
 
 	// This is GitHub's sanitized rendering of
 	// `<a id="ref-selector" aria-label="../../../../../octocat/Hello-World/archive/refs/heads/master branch">`
 	// in a README or comment (captured from GitHub's Markdown API): the id gains
 	// a `user-content-` prefix and the aria-label survives. GitHub's own
-	// switcher is removed so the planted link is the only candidate, which is
-	// what any page lacking the switcher or listing user content first presents.
+	// switcher and "Download ZIP" link are removed so the planted link is the
+	// only candidate the fallback path can find.
 	await page.evaluate(() => {
 		document.querySelector('[id$="ref-selector"]')?.remove();
 		const planted = document.createElement("a");
@@ -206,16 +259,7 @@ test("keeps the .zip download inside the repo when user content mimics the branc
 		document.querySelector("article")?.prepend(planted);
 	});
 
-	await page.getByRole("button", { name: "Code", exact: true }).click();
-	const [download] = await Promise.all([
-		page.waitForEvent("download"),
-		page.getByRole("button", { name: "Download .zip" }).click(),
-	]);
-	await download.cancel();
-
-	// GitHub redirects the archive to codeload, which keeps the /<owner>/<repo>
-	// path prefix.
-	expect(new URL(download.url()).pathname).toMatch(
+	expect(await downloadZip(page, { withoutNativeLink: true })).toMatch(
 		new RegExp(`^${new URL(REPO_URL).pathname}/`)
 	);
 });

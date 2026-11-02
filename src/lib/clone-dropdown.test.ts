@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -232,5 +232,68 @@ describe("setActiveTarget", () => {
 		expect(panel()!.querySelector("button")!.textContent).toBe(
 			"Clone in Cursor"
 		);
+	});
+});
+
+describe("the .zip download", () => {
+	// The repo the captured fixture was rendered for.
+	const FIXTURE_REPO = {
+		owner: "AdamAkhlaq",
+		repo: "clone-anywhere-for-github",
+		isRepository: true,
+	};
+	const ARCHIVE =
+		"https://github.com/AdamAkhlaq/clone-anywhere-for-github/archive";
+
+	const nativeZipLink = () =>
+		document.querySelector<HTMLAnchorElement>('a[href*="/archive/"]')!;
+
+	// Returns the href of the download anchor our button clicks; the click
+	// itself is stubbed because jsdom doesn't implement navigation.
+	function download(): string | undefined {
+		let downloaded: string | undefined;
+		vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+			this: HTMLAnchorElement
+		) {
+			if (this.hasAttribute("download")) downloaded = this.href;
+		});
+		setActiveTarget("zip");
+		injectCloneTab(list(), FIXTURE_REPO);
+		panel()!.querySelector("button")!.click();
+		return downloaded;
+	}
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it("downloads the ref GitHub's own Download ZIP link names", () => {
+		nativeZipLink().setAttribute(
+			"href",
+			"/AdamAkhlaq/clone-anywhere-for-github/archive/refs/tags/v1.2.0.zip"
+		);
+		expect(download()).toBe(`${ARCHIVE}/refs/tags/v1.2.0.zip`);
+	});
+
+	it("ignores a Download ZIP link that points at another repo", () => {
+		nativeZipLink().setAttribute(
+			"href",
+			"/octocat/Hello-World/archive/HEAD.zip"
+		);
+		expect(download()).toBe(`${ARCHIVE}/HEAD.zip`);
+	});
+
+	it("builds the URL itself when GitHub's link is missing", () => {
+		nativeZipLink().remove();
+		expect(download()).toBe(`${ARCHIVE}/HEAD.zip`);
+	});
+
+	it("ignores archive links in page content outside the dropdown", () => {
+		nativeZipLink().remove();
+		const readmeLink = document.createElement("a");
+		readmeLink.href =
+			"/AdamAkhlaq/clone-anywhere-for-github/archive/refs/heads/other.zip";
+		document.body.prepend(readmeLink);
+		expect(download()).toBe(`${ARCHIVE}/HEAD.zip`);
 	});
 });

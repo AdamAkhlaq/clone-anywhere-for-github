@@ -1,5 +1,5 @@
 import { RepositoryInfo } from "./repository";
-import { buildArchiveUrl, buildCloneUrl } from "./clone-url";
+import { buildArchiveUrl, buildCloneUrl, verifyArchiveUrl } from "./clone-url";
 import { detectBranch } from "./branch";
 import {
 	CloneTarget,
@@ -370,7 +370,9 @@ function createCloneButton(repoInfo: RepositoryInfo): HTMLButtonElement {
 	button.appendChild(content);
 	// Read the active target at click time so the action always matches the
 	// current choice, even if it changed since the panel was built.
-	button.addEventListener("click", () => activateClone(activeTarget, repoInfo));
+	button.addEventListener("click", () =>
+		activateClone(activeTarget, repoInfo, button)
+	);
 	return button;
 }
 
@@ -411,15 +413,21 @@ function resolveButtonClasses(): {
 
 /**
  * Performs the chosen action for `target`: an editor gets a clone deep-link
- * handoff; the archive target downloads a .zip of the branch the page is
- * showing. Both URLs are built (and validated) from the live repo info at call
- * time, so a malformed owner/repo simply no-ops rather than firing a bad link.
+ * handoff; the archive target downloads a .zip of the ref the page is showing.
+ * Both URLs are validated against the live repo info at call time, so a
+ * malformed owner/repo simply no-ops rather than firing a bad link.
  */
-function activateClone(target: CloneTarget, repoInfo: RepositoryInfo): void {
+function activateClone(
+	target: CloneTarget,
+	repoInfo: RepositoryInfo,
+	trigger: Element
+): void {
 	const { owner, repo } = repoInfo;
 
 	if (target.kind === "archive") {
-		const archiveUrl = buildArchiveUrl(owner, repo, detectBranch());
+		const archiveUrl =
+			findNativeArchiveUrl(trigger, repoInfo) ??
+			buildArchiveUrl(owner, repo, detectBranch());
 		if (archiveUrl) downloadArchive(archiveUrl);
 		return;
 	}
@@ -431,6 +439,25 @@ function activateClone(target: CloneTarget, repoInfo: RepositoryInfo): void {
 		// blank tab _blank can leave behind.
 		window.location.href = cloneUrl;
 	}
+}
+
+/**
+ * Reads the URL of GitHub's own "Download ZIP" link, which shares the clone
+ * tabs' overlay and names the exact ref the page shows, whether a branch, a tag,
+ * or a commit. Guessing the ref from the page instead 404s on tags and commits.
+ * The overlay is mounted in Primer's portal, outside any README or comment, so
+ * page content can't stand in for the link, and the URL must still verify as
+ * this repo's archive. Returns null when the link is missing, leaving the
+ * caller to build the URL itself.
+ */
+function findNativeArchiveUrl(
+	trigger: Element,
+	{ owner, repo }: RepositoryInfo
+): string | null {
+	const link = trigger
+		.closest('[data-component="AnchoredOverlay"]')
+		?.querySelector<HTMLAnchorElement>('a[href*="/archive/"]');
+	return link ? verifyArchiveUrl(link.href, owner, repo) : null;
 }
 
 /**

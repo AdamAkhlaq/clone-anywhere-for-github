@@ -63,6 +63,41 @@ export function buildArchiveUrl(
 }
 
 /**
+ * Returns `href` as an absolute URL if it is a .zip source archive of this
+ * owner/repo on github.com, or null otherwise. Lets the caller reuse the exact
+ * archive link GitHub renders (which names the right ref for a branch, tag, or
+ * commit) while guaranteeing it can't point at another repo or host. Parsing
+ * first resolves any `.`/`..` segments, so the prefix check sees the real path.
+ * GitHub names are case-insensitive, so the prefix is compared that way.
+ */
+export function verifyArchiveUrl(
+	href: string,
+	owner: string,
+	repo: string
+): string | null {
+	const base = repoBaseUrl(owner, repo);
+	if (!base) {
+		return null;
+	}
+
+	let url: URL;
+	try {
+		url = new URL(href);
+	} catch {
+		return null;
+	}
+
+	const archivePrefix = `${new URL(base).pathname}/archive/`.toLowerCase();
+	const isRepoArchive =
+		url.origin === "https://github.com" &&
+		url.pathname.toLowerCase().startsWith(archivePrefix) &&
+		url.pathname.endsWith(".zip") &&
+		!url.search &&
+		!url.hash;
+	return isRepoArchive ? url.href : null;
+}
+
+/**
  * Sanitises a detected branch for use in the archive path, or returns null so
  * the caller falls back to HEAD. Each "/"-delimited segment is escaped while the
  * slashes themselves are kept, so a nested ref (e.g. `release/v2`) keeps the
